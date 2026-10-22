@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fun Counting Class | QuestX</title>
+<style>
+  :root {
+    --cream: #FFF9EC;
+    --butter: #FFE9B8;
+    --peach: #FFD8C2;
+    --sky: #8ED1FC;
+    --mint: #BDEBC8;
+    --pink: #FFC9D9;
+    --brown: #4E3222;
+    --brown-mid: #7A5238;
+    --tan: #F0DDB8;
+    --good: #3F8F5B;
+    --oops: #C96A2B;
+    --button: #D94668;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--brown);
+    font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
+  h1, h2 { font-family: Georgia, "Times New Roman", serif; line-height: 1.2; margin: 0 0 .5rem; }
+  h1 { font-size: clamp(2rem, 8vw, 3.2rem); }
+  h2 { font-size: clamp(1.4rem, 5vw, 1.9rem); }
+  p { margin: 0 0 .8rem; }
+  button:focus-visible { outline: 4px solid var(--brown); outline-offset: 3px; }
+
+  .wrap { max-width: 680px; margin: 0 auto; padding: 0 1.1rem; }
+
+  /* Placeholder style: easy to spot */
+  .ph {
+    background: #fff;
+    border: 1.5px dashed var(--brown-mid);
+    border-radius: 6px;
+    padding: .05rem .4rem;
+    font-style: italic;
+  }
+
+  html { scroll-behavior: smooth; }
+  section, header[id] { scroll-margin-top: 4rem; }
+  .topbar { background: var(--sky); color: var(--brown); padding: .6rem 0; position: sticky; top: 0; z-index: 10; }
+  .topbar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem 1rem; }
+  .topbar strong { font-family: Georgia, serif; font-size: 1.15rem; margin-right: auto; }
+  .topbar a { color: var(--brown); text-decoration: none; font-weight: 700; padding: .35rem .9rem; border-radius: 999px; }
+  .topbar a:hover { background: rgba(255,255,255,.6); }
+  .topbar a:focus-visible { outline: 3px solid var(--brown); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  .section-head { text-align: center; padding-top: 2rem; }
+  .section-head h2 { font-size: clamp(1.7rem, 6vw, 2.3rem); }
+
+  /* Colors section */
+  .colors { padding: 0 0 2.6rem; background: var(--cream); }
+  .color-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin-top: 1.2rem; }
+  .color-card { background: #fff; border: 3px solid var(--peach); border-radius: 20px; padding: .7rem; text-align: center; }
+  .swatch { height: 4.5rem; border-radius: 14px; border: 3px dashed var(--brown-mid); background: var(--cream); display: grid; place-items: center; font-size: .75rem; font-style: italic; margin-bottom: .5rem; }
+  .color-card p { margin: 0; font-size: .85rem; }
+  .alt-band { background: var(--peach); }
+
+  .hero { background: var(--butter); text-align: center; padding: 1.6rem 0 0; overflow: hidden; }
+  .scene { display: block; width: 100%; max-width: 560px; height: auto; margin: .6rem auto 0; }
+
+  /* Character slot */
+  .char-slot {
+    width: 120px; height: 120px; margin: .8rem auto 0;
+    border: 3px dashed var(--brown-mid); border-radius: 50%;
+    background: #fff; display: grid; place-items: center;
+    padding: .6rem; text-align: center; font-size: .8rem; font-style: italic;
+  }
+  .char-slot.small { width: 92px; height: 92px; margin: 0; font-size: .68rem; padding: .4rem; flex: none; }
+
+  /* Game */
+  .game { padding: 1.6rem 0 2.6rem; }
+  .card { background: #fff; border: 4px solid var(--peach); border-radius: 26px; padding: 1.2rem; }
+  .row { display: flex; align-items: center; gap: .9rem; margin-bottom: 1rem; }
+  .score { font-weight: 700; margin-bottom: .6rem; text-align: right; }
+
+  .fruits {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem;
+    background: var(--cream); border: 3px dashed var(--tan); border-radius: 18px;
+    padding: 1rem .6rem; min-height: 9rem; align-content: center;
+  }
+  .fruits span { width: clamp(3.2rem, 16vw, 4.6rem); display: block; }
+  .fruits svg { width: 100%; height: auto; display: block; }
+
+  .choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin: 1.2rem 0; }
+  .choice {
+    font-family: Georgia, serif; font-size: 2.4rem; font-weight: 700;
+    min-height: 4.5rem; border-radius: 20px; border: 3px solid var(--brown-mid);
+    color: var(--brown); cursor: pointer;
+  }
+  .choices .choice:nth-child(1) { background: var(--pink);  border-color: #F28BAA; }
+  .choices .choice:nth-child(2) { background: var(--butter); border-color: #F0B93F; }
+  .choices .choice:nth-child(3) { background: #CDEBFF;      border-color: var(--sky); }
+  .choices .choice:hover:not(:disabled) { filter: brightness(.96); transform: scale(1.03); }
+  .choices .choice.right { background: var(--good); border-color: var(--good); color: #fff; }
+  .choices .choice.wrong { background: var(--oops); border-color: var(--oops); color: #fff; }
+  .choice:disabled { cursor: default; }
+
+  .feedback { min-height: 2.2rem; text-align: center; font-weight: 700; }
+  .next {
+    display: block; margin: .6rem auto 0; background: var(--button); color: #fff;
+    border: 0; border-radius: 999px; padding: .8rem 2rem; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+  }
+  .next:hover { filter: brightness(.92); }
+  .next[hidden] { display: none; }
+
+  footer { background: var(--mint); color: var(--brown); padding: 1.3rem 0; text-align: center; font-size: .95rem; }
+</style>
+</head>
+<body>
+
+<nav class="topbar" aria-label="Main">
+  <div class="wrap">
+    <strong>QuestX</strong>
+    <a href="#home">Home</a>
+    <a href="#counting">Counting</a>
+    <a href="#colors">Colors</a>
+  </div>
+</nav>
+
+<header class="hero" id="home">
+  <div class="wrap">
+    <h1>Fun Counting Class</h1>
+    <p><span class="ph">[One short sentence telling kids what to do]</span></p>
+    <div class="char-slot" role="img" aria-label="Placeholder for a character picture">[Chiikawa character picture goes here]</div>
+  </div>
+
+  <!-- Picture: sun, clouds and hills -->
+  <svg class="scene" viewBox="0 0 400 130" role="img" aria-label="A sunny sky with clouds over green hills">
+    <g stroke="#FFC14D" stroke-width="5" stroke-linecap="round">
+      <path d="M62 14v-8M62 86v8M20 50h-8M104 50h8M32 20l-6-6M92 80l6 6M92 20l6-6M32 80l-6 6"/>
+    </g>
+    <circle cx="62" cy="50" r="28" fill="#FFD43B"/>
+    <g fill="#fff">
+      <ellipse cx="190" cy="40" rx="34" ry="14"/><ellipse cx="170" cy="32" rx="20" ry="13"/><ellipse cx="204" cy="30" rx="22" ry="14"/>
+      <ellipse cx="320" cy="62" rx="30" ry="12"/><ellipse cx="302" cy="54" rx="18" ry="11"/><ellipse cx="332" cy="52" rx="19" ry="12"/>
+    </g>
+    <circle cx="90" cy="150" r="70" fill="#9ADFA6"/>
+    <circle cx="250" cy="158" r="80" fill="#BDEBC8"/>
+    <circle cx="380" cy="146" r="64" fill="#9ADFA6"/>
+  </svg>
+</header>
+
+<main>
+<section class="game" id="counting">
+  <div class="wrap">
+    <div class="section-head">
+      <h2><span class="ph">[Counting section title]</span></h2>
+      <p><span class="ph">[One sentence explaining the counting game]</span></p>
+    </div>
+    <div class="card">
+      <div class="score" aria-live="polite">Score: <span id="score">0</span> / <span id="total">0</span></div>
+
+      <div class="row">
+        <div class="char-slot small" role="img" aria-label="Placeholder for a character picture">[Character picture]</div>
+        <h2 style="margin:0"><span class="ph">[Question: how many do you see?]</span></h2>
+      </div>
+
+      <div class="fruits" id="fruits" aria-live="polite"></div>
+
+      <div class="choices" id="choices"></div>
+
+      <div class="feedback" id="feedback" aria-live="polite"></div>
+      <button class="next" id="next" type="button" hidden>Next</button>
+    </div>
+  </div>
+</section>
+
+<section class="colors" id="colors">
+  <div class="wrap">
+    <div class="section-head">
+      <h2><span class="ph">[Colors section title]</span></h2>
+      <p><span class="ph">[One sentence explaining the colors section]</span></p>
+    </div>
+    <div class="color-grid">
+      <div class="color-card"><div class="swatch">[Color]</div><p><span class="ph">[Color name]</span></p></div>
+      <div class="color-card"><div class="swatch">[Color]</div><p><span class="ph">[Color name]</span></p></div>
+      <div class="color-card"><div class="swatch">[Color]</div><p><span class="ph">[Color name]</span></p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p style="margin:0">QuestX &middot; First AI Builder &middot; <span class="ph">[Class or teacher name]</span></p>
+  </div>
+</footer>
+
+<script>
+  // Easy settings: change these to make the game easier or harder.
+  var MAX_NUMBER = 5;            // biggest number of fruits shown
+  var MSG_RIGHT = "[Cheer message]";
+  var MSG_WRONG = "[Try again message]";
+
+  // Fruit pictures (drawn here, so no outside files are needed)
+  var FRUITS = [
+    // apple
+    '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 20c-7-6-20-3-20 13 0 13 9 24 16 24 2 0 3-1 4-1s2 1 4 1c7 0 16-11 16-24 0-16-13-19-20-13z" fill="#FF6B6B"/><path d="M32 20c0-6 2-10 5-12" stroke="#7A5238" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M37 12c5-4 11-2 13 1-5 4-11 3-13-1z" fill="#69C46D"/><ellipse cx="22" cy="34" rx="3" ry="6" fill="#fff" opacity=".45"/></svg>',
+    // banana
+    '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 22c4 22 24 34 46 24-2 4-6 8-12 10C24 62 6 46 10 22z" fill="#FFD43B" stroke="#E0A91F" stroke-width="2" stroke-linejoin="round"/><path d="M10 22l-2-7" stroke="#7A5238" stroke-width="4" stroke-linecap="round"/></svg>',
+    // orange
+    '<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="37" r="22" fill="#FFA94D"/><path d="M32 15c0-4 4-8 10-8-1 6-5 9-10 8z" fill="#69C46D"/><ellipse cx="23" cy="30" rx="4" ry="7" fill="#fff" opacity=".4"/></svg>',
+    // grapes
+    '<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 18V8" stroke="#7A5238" stroke-width="3" stroke-linecap="round"/><path d="M33 10c5-4 11-2 12 1-5 3-10 3-12-1z" fill="#69C46D"/><g fill="#9775FA" stroke="#7048E8" stroke-width="1.5"><circle cx="20" cy="26" r="8"/><circle cx="32" cy="26" r="8"/><circle cx="44" cy="26" r="8"/><circle cx="26" cy="38" r="8"/><circle cx="38" cy="38" r="8"/><circle cx="32" cy="50" r="8"/></g></svg>'
+  ];
+
+  var fruitsEl = document.getElementById("fruits");
+  var choicesEl = document.getElementById("choices");
+  var feedbackEl = document.getElementById("feedback");
+  var nextBtn = document.getElementById("next");
+  var scoreEl = document.getElementById("score");
+  var totalEl = document.getElementById("total");
+  var score = 0, total = 0, answer = 0, answered = false, missed = false;
+
+  function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+  function newRound() {
+    answered = false;
+    missed = false;
+    answer = rand(1, MAX_NUMBER);
+    var fruit = FRUITS[rand(0, FRUITS.length - 1)];
+    fruitsEl.textContent = "";
+    for (var i = 0; i < answer; i++) {
+      var s = document.createElement("span");
+      s.innerHTML = fruit;
+      fruitsEl.appendChild(s);
+    }
+
+    var options = [answer];
+    while (options.length < 3) {
+      var n = rand(1, MAX_NUMBER);
+      if (options.indexOf(n) === -1) options.push(n);
+    }
+    options.sort(function () { return Math.random() - 0.5; });
+
+    choicesEl.textContent = "";
+    options.forEach(function (n) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "choice";
+      b.textContent = n;
+      b.addEventListener("click", function () { pick(b, n); });
+      choicesEl.appendChild(b);
+    });
+
+    feedbackEl.textContent = "";
+    feedbackEl.style.color = "";
+    nextBtn.hidden = true;
+  }
+
+  function pick(btn, n) {
+    if (answered) return;
+    if (n === answer) {
+      answered = true;
+      total++;
+      if (!missed) score++;
+      btn.classList.add("right");
+      feedbackEl.textContent = MSG_RIGHT;
+      feedbackEl.style.color = "var(--good)";
+      finish();
+    } else {
+      btn.classList.add("wrong");
+      btn.disabled = true;
+      feedbackEl.textContent = MSG_WRONG;
+      feedbackEl.style.color = "var(--oops)";
+      missed = true;
+    }
+  }
+
+  function finish() {
+    var all = choicesEl.querySelectorAll("button");
+    for (var i = 0; i < all.length; i++) all[i].disabled = true;
+    scoreEl.textContent = score;
+    totalEl.textContent = total;
+    nextBtn.hidden = false;
+    nextBtn.focus();
+  }
+
+  nextBtn.addEventListener("click", newRound);
+  newRound();
+</script>
+</body>
+</html>
